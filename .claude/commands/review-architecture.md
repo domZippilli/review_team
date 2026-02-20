@@ -8,12 +8,14 @@ Determine the review target from: $ARGUMENTS
 ```
 gh pr diff <number>
 gh pr diff <number> --name-only
-gh pr view <number> --json title,body
+gh pr view <number> --json title,body,baseRefName,headRefName
 ```
 
 **If the argument is empty or not a number** (local diff):
-Try in order: `git diff main...HEAD`, `git diff master...HEAD`, `git diff origin/main...HEAD`
-Also: `git diff main...HEAD --name-only` and `git log main..HEAD --oneline`
+Try in order: `git diff main...HEAD`, `git diff master...HEAD`, `git diff origin/main...HEAD`, `git diff origin/master...HEAD`
+Save the successful base ref as `BASE_REF` (`main`, `master`, `origin/main`, or `origin/master`), then run:
+`git diff ${BASE_REF}...HEAD --name-only` and `git log ${BASE_REF}..HEAD --oneline`
+If none succeed, inform the user that no supported base branch was found (`main`, `master`, `origin/main`, `origin/master`) and stop.
 
 If the diff is empty, inform the user and stop.
 

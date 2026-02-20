@@ -1,6 +1,6 @@
 # PR Review Team
 
-Multi-agent PR review system for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Six specialist agents review code changes in parallel and produce a unified report with structured, actionable findings.
+Multi-agent PR review system for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Six specialist agents review code changes in parallel, then a tech lead agent reviews the reviews and produces final merge guidance.
 
 ## Specialists
 
@@ -12,6 +12,7 @@ Multi-agent PR review system for [Claude Code](https://docs.anthropic.com/en/doc
 | Performance | Algorithmic complexity, N+1 queries, memory leaks, caching |
 | Error Handling | Failure modes, error propagation, retry logic, logging |
 | Testing | Coverage, assertion quality, edge cases, test isolation |
+| Tech Lead | Reviews specialist findings for quality, consistency, blind spots, and final recommendation |
 
 ## Usage
 
@@ -19,7 +20,8 @@ Requires [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Run from
 
 ```
 /review-pr 123          # Full review of GitHub PR #123
-/review-pr              # Full review of local diff (current branch vs main)
+/review-pr              # Full review of local diff (current branch vs default base branch)
+/review-tech-lead pr-123
 ```
 
 Run a single specialist:
@@ -31,11 +33,12 @@ Run a single specialist:
 /review-performance
 /review-errors 99
 /review-testing
+/review-tech-lead pr-123
 ```
 
 ## Output
 
-Findings use three severity levels: **CRITICAL** (must fix), **WARNING** (should fix), **INFO** (suggestion). The orchestrator synthesizes all specialist findings into a single report with a final verdict: APPROVE, REQUEST CHANGES, or COMMENT.
+Findings use three severity levels: **CRITICAL** (must fix), **WARNING** (should fix), **INFO** (suggestion). The orchestrator synthesizes specialist findings and the tech lead meta-review into a single report with a final verdict: APPROVE, REQUEST CHANGES, or COMMENT.
 
 Results are saved to `reviews/` for persistence across context resets.
 
